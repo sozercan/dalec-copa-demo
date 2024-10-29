@@ -1,0 +1,58 @@
+#syntax=ghcr.io/azure/dalec/frontend:0.9
+
+args:
+  COMMIT: e8d5d49a9df7ce52a215848eb8cdbd3c7857c2c3
+  REVISION: 1
+  VERSION: 3.17.1
+
+name: gatekeeper-manager
+packager: Azure Container Upstream
+vendor: Microsoft Corporation
+license: Apache-2.0
+website: https://github.com/open-policy-agent/gatekeeper
+description: OPA Gatekeeper
+version: ${VERSION}
+revision: ${REVISION}
+
+sources:
+  gatekeeper:
+    git:
+      url: https://github.com/open-policy-agent/gatekeeper.git
+      commit: ${COMMIT}
+
+image:
+  entrypoint: /manager
+  user: 65532:65532
+  post:
+     symlinks:
+       /usr/bin/manager:
+         path: /manager
+
+dependencies:
+  build:
+    golang:
+    git:
+  runtime:
+    openssl-libs:
+      version:
+        - "== 3.3.0-2.azl3" # pinning for demo purposes
+    ca-certificates:
+
+build:
+  env:
+    VERSION: ${VERSION}
+  steps:
+    - command: |
+        cd gatekeeper
+        export LDFLAGS="-X github.com/open-policy-agent/gatekeeper/v3/pkg/version.Version=${VERSION}"
+        go build -ldflags="${LDFLAGS}" -mod vendor -o bin/manager
+
+artifacts:
+  binaries:
+    gatekeeper/bin/manager: {}
+
+tests:
+  - name: Check files
+    files:
+      /usr/bin/manager:
+        permissions: 0755

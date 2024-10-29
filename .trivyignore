@@ -1,0 +1,5 @@
+# temporarily ignore the following vulnerabilities until a new package is released
+# these happened after the last release of the package
+CVE-2024-34156
+CVE-2024-34155
+CVE-2024-34158
