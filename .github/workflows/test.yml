@@ -1,0 +1,48 @@
+name: test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@0d381219ddf674d61a7572ddd19d7941e271515c # v2.9.0
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: install dependencies
+        run: |
+            # install pv - used for demo-magic
+            sudo apt-get install -y --no-install-recommends pv
+
+            # install copa
+            wget https://github.com/project-copacetic/copacetic/releases/download/v0.9.0/copa_0.9.0_linux_amd64.tar.gz
+            tar -xvf copa_0.9.0_linux_amd64.tar.gz
+            sudo mv copa /usr/local/bin/
+            copa --version
+
+            # install yq
+            wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq && chmod +x /usr/local/bin/yq
+            yq --version
+
+            # install trivy
+            wget https://github.com/aquasecurity/trivy/releases/download/v0.56.2/trivy_0.56.2_Linux-64bit.tar.gz
+            tar -xvf trivy_0.56.2_Linux-64bit.tar.gz
+            sudo mv trivy /usr/local/bin/
+            trivy --version
+
+      - name: run demo
+        run: |
+          ./demo.sh
