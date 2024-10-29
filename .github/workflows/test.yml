@@ -22,6 +22,18 @@ jobs:
 
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
+      # need containerd image store for testing local images
+      - uses: crazy-max/ghaction-setup-docker@78318f8be53384b971671f27d81f5e72526c102d # v3.3.0
+        with:
+          daemon-config: |
+            {
+              "debug": true,
+              "features": {
+                "containerd-snapshotter": true
+              }
+            }
+      - uses: crazy-max/ghaction-github-runtime@b3a9207c0e1ef41f4cf215303c976869d0c2c1c4 # v3.0.0
+
       - name: install dependencies
         run: |
             # install pv - used for demo-magic
