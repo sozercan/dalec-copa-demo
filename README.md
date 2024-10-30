@@ -14,6 +14,7 @@ Make sure you have the following tools installed on your machine and available i
 - [Copa](https://github.com/project-copacetic/copacetic) [v0.9.0](https://github.com/project-copacetic/copacetic/releases/tag/v0.9.0) or later
 - [Trivy](https://github.com/aquasecurity/trivy)
 - [Docker](https://docs.docker.com/engine/install/)
+  - This demo uses local images, so make sure to [enable containerd image store](https://docs.docker.com/engine/storage/containerd/) in Docker
 - [yq](https://github.com/mikefarah/yq)
 - GNU/Linux tools such as awk, sed, grep, cat
 

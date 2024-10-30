@@ -40,26 +40,29 @@ jobs:
             sudo apt-get install -y --no-install-recommends pv
 
             # install copa
-            wget https://github.com/project-copacetic/copacetic/releases/download/v0.9.0/copa_0.9.0_linux_amd64.tar.gz
-            tar -xvf copa_0.9.0_linux_amd64.tar.gz
+            wget -q https://github.com/project-copacetic/copacetic/releases/download/v${COPA_VERSION}/copa_${COPA_VERSION}_linux_amd64.tar.gz
+            tar -xvf copa_${COPA_VERSION}_linux_amd64.tar.gz
             sudo mv copa /usr/local/bin/
             copa --version
 
             # install yq
-            wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq && chmod +x /usr/local/bin/yq
+            wget -q https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq && chmod +x /usr/local/bin/yq
             yq --version
 
             # install trivy
-            wget https://github.com/aquasecurity/trivy/releases/download/v0.56.2/trivy_0.56.2_Linux-64bit.tar.gz
-            tar -xvf trivy_0.56.2_Linux-64bit.tar.gz
+            wget -q https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz
+            tar -xvf trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz
             sudo mv trivy /usr/local/bin/
             trivy --version
+        env:
+          COPA_VERSION: 0.9.0
+          TRIVY_VERSION: 0.56.2
 
       - name: download trivy db
         run: |
-            trivy image \
-              --download-db-only \
-              --db-repository=ghcr.io/aquasecurity/trivy-db:2,public.ecr.aws/aquasecurity/trivy-db
+          trivy image \
+            --download-db-only \
+            --db-repository=ghcr.io/aquasecurity/trivy-db:2,public.ecr.aws/aquasecurity/trivy-db
 
       - name: run demo
         run: |
